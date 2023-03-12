@@ -11,14 +11,17 @@ consola.info("BOT_TOKEN: ", token);
 
 bot.start((ctx) => ctx.reply("欢迎使用小鲨鱼"));
 bot.help((ctx) => ctx.reply("Send me a prompt."));
-bot.command("sdimg", async (ctx) => {
+const SD_IMG_COMMAND = "sdimg";
+bot.command(SD_IMG_COMMAND, async (ctx) => {
   const text = ctx.message.text;
   consola.info("text: ", text);
-  if (!text || !text.trim() || text.trim() === "/sdimg") {
+  if (!text || !text.trim() || text.trim() === "/" + SD_IMG_COMMAND) {
     ctx.reply("Please send a prompt.");
     return;
   }
-  const res = await txt2img({ prompt: text });
+  const prompt = text.replace("/" + SD_IMG_COMMAND, "").trim();
+  consola.info("prompt: ", prompt);
+  const res = await txt2img({ prompt });
   consola.info("res: ", res);
   const image = res?.images?.[0];
   ctx.replyWithPhoto({ source: Buffer.from(image, "base64") });
