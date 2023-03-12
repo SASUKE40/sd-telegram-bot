@@ -25,6 +25,7 @@ bot.command(SD_IMG_COMMAND, async (ctx) => {
   consola.info("res: ", res);
   const image = res?.images?.[0];
   ctx.replyWithPhoto({ source: Buffer.from(image, "base64") });
+  consola.success("Generate image success!");
 });
 bot.launch();
 
