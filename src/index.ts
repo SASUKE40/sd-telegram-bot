@@ -11,9 +11,13 @@ consola.info("BOT_TOKEN: ", token);
 
 bot.start((ctx) => ctx.reply("欢迎使用小鲨鱼"));
 bot.help((ctx) => ctx.reply("Send me a prompt."));
-bot.on(message("text"), async (ctx) => {
+bot.command("sdimg", async (ctx) => {
   const text = ctx.message.text;
   consola.info("text: ", text);
+  if (!text || !text.trim() || text.trim() === "/sdimg") {
+    ctx.reply("Please send a prompt.");
+    return;
+  }
   const res = await txt2img({ prompt: text });
   consola.info("res: ", res);
   const image = res?.images?.[0];
