@@ -1,16 +1,24 @@
-const { Telegraf } = require("telegraf");
-import { message } from "telegraf/filters";
 import config from "config";
 import consola from "consola";
+import { Buffer } from "node:buffer";
+import { Telegraf } from "telegraf";
+import { message } from "telegraf/filters";
+import { txt2img } from "./api";
 
 const token = config.get("BOT_TOKEN");
 const bot = new Telegraf(token);
 consola.info("BOT_TOKEN: ", token);
 
-bot.start((ctx) => ctx.reply("Welcome"));
-bot.help((ctx) => ctx.reply("Send me a sticker"));
-bot.on(message("text"), (ctx) => ctx.reply("👍"));
-bot.hears("hi", (ctx) => ctx.reply("Hey there"));
+bot.start((ctx) => ctx.reply("欢迎使用小鲨鱼"));
+bot.help((ctx) => ctx.reply("Send me a prompt."));
+bot.on(message("text"), async (ctx) => {
+  const text = ctx.message.text;
+  consola.info("text: ", text);
+  const res = await txt2img({ prompt: text });
+  consola.info("res: ", res);
+  const image = res?.images?.[0];
+  ctx.replyWithPhoto({ source: Buffer.from(image, "base64") });
+});
 bot.launch();
 
 // Enable graceful stop
